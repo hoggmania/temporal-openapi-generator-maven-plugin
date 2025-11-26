@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Example consumer project that uses the Temporal OpenAPI Generator Plugin
+    This demonstrates how to use the plugin in your own project
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>temporal-petstore-example</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <temporal.version>1.20.1</temporal.version>
+    </properties>
+
+    <dependencies>
+        <!-- Temporal SDK -->
+        <dependency>
+            <groupId>io.temporal</groupId>
+            <artifactId>temporal-sdk</artifactId>
+            <version>${temporal.version}</version>
+        </dependency>
+
+        <!-- Jackson for JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.3</version>
+        </dependency>
+
+        <!-- SLF4J for logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Step 1: Generate OpenAPI client using OpenAPI Generator -->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.0.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-api-client</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/petstore-openapi.yaml</inputSpec>
+                            <generatorName>java</generatorName>
+                            <library>native</library>
+                            <apiPackage>com.example.petstore.client.api</apiPackage>
+                            <modelPackage>com.example.petstore.client.model</modelPackage>
+                            <invokerPackage>com.example.petstore.client</invokerPackage>
+                            <output>${project.build.directory}/generated-sources/openapi-client</output>
+                            <configOptions>
+                                <dateLibrary>java8</dateLibrary>
+                                <useJakartaEe>false</useJakartaEe>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Step 2: Generate Temporal Activities using Temporal OpenAPI Generator -->
+            <plugin>
+                <groupId>io.temporal.openapi</groupId>
+                <artifactId>temporal-openapi-generator-maven-plugin</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>generate-temporal-activities</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <!-- Path to your OpenAPI specification -->
+                            <specFile>${project.basedir}/src/main/resources/petstore-openapi.yaml</specFile>
+                            
+                            <!-- Where to put generated Temporal Activity code -->
+                            <outputDirectory>${project.build.directory}/generated-sources/temporal-activities</outputDirectory>
+                            
+                            <!-- Package for generated Temporal Activities -->
+                            <packageName>com.example.petstore.temporal.activities</packageName>
+                            
+                            <!-- Name of the Activity interface -->
+                            <activityName>PetStoreActivity</activityName>
+                            
+                            <!-- Package where OpenAPI Generator created the API client -->
+                            <apiClientPackage>com.example.petstore.client.api</apiClientPackage>
+                            
+                            <!-- Generate both interface and implementation -->
+                            <generateImplementation>true</generateImplementation>
+                            
+                            <!-- Generate model POJOs (or reuse from OpenAPI Generator) -->
+                            <generateModels>false</generateModels>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Build helper to add generated sources -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.4.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/openapi-client/src/main/java</source>
+                                <source>${project.build.directory}/generated-sources/temporal-activities</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
