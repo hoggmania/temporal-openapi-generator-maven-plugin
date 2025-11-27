@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Example project that uses the Temporal OpenAPI Generator Plugin with Aquasec API
+    This demonstrates downloading an OpenAPI spec from a URL and generating Temporal Activities
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>temporal-aquasec-example</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <temporal.version>1.20.1</temporal.version>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <aquasec.openapi.url>https://3920520305-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FyZbW8vbNs5hz8x57emJJ%2Fuploads%2Flc6qdAlkwSzkwHOe3tR8%2Faqua-public-swagger.json?alt=media&amp;token=7cf87950-9ca0-4be2-9d12-95498d22c3fa</aquasec.openapi.url>
+    </properties>
+
+    <dependencies>
+        <!-- Temporal SDK -->
+        <dependency>
+            <groupId>io.temporal</groupId>
+            <artifactId>temporal-sdk</artifactId>
+            <version>${temporal.version}</version>
+        </dependency>
+
+        <!-- Jackson for JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.15.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>0.2.6</version>
+        </dependency>
+
+        <!-- Javax annotations (for @Generated) -->
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+
+        <!-- SLF4J for logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Step 1: Generate OpenAPI client using OpenAPI Generator -->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.0.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-api-client</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/aquasec-openapi.json</inputSpec>
+                            <generatorName>java</generatorName>
+                            <library>native</library>
+                            <apiPackage>com.example.aquasec.client.api</apiPackage>
+                            <modelPackage>com.example.aquasec.client.model</modelPackage>
+                            <invokerPackage>com.example.aquasec.client</invokerPackage>
+                            <output>${project.build.directory}/generated-sources/openapi-client</output>
+                            <skipValidateSpec>true</skipValidateSpec>
+                            <configOptions>
+                                <dateLibrary>java8</dateLibrary>
+                                <useJakartaEe>false</useJakartaEe>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Step 2: Generate Temporal Activities using Temporal OpenAPI Generator -->
+            <plugin>
+                <groupId>io.github.hoggmania</groupId>
+                <artifactId>temporal-openapi-generator-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-temporal-activities</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <!-- Path to your OpenAPI specification -->
+                            <specFile>${project.basedir}/src/main/resources/aquasec-openapi.json</specFile>
+                            
+                            <!-- Where to put generated Temporal Activity code -->
+                            <outputDirectory>${project.build.directory}/generated-sources/temporal-activities</outputDirectory>
+                            
+                            <!-- Package for generated Temporal Activities -->
+                            <packageName>com.example.aquasec.temporal.activities</packageName>
+                            
+                            <!-- Name of the Activity interface -->
+                            <activityName>AquasecActivity</activityName>
+                            
+                            <!-- Package where OpenAPI Generator created the API client -->
+                            <apiClientPackage>com.example.aquasec.client.api</apiClientPackage>
+                            
+                            <!-- Package where OpenAPI Generator created the model classes -->
+                            <modelPackage>com.example.aquasec.client.model</modelPackage>
+                            
+                            <!-- Generate both interface and implementation -->
+                            <generateImplementation>true</generateImplementation>
+                            
+                            <!-- Generate model POJOs (or reuse from OpenAPI Generator) -->
+                            <generateModels>false</generateModels>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Build helper to add generated sources -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.4.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/openapi-client/src/main/java</source>
+                                <source>${project.build.directory}/generated-sources/temporal-activities</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <release>17</release>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
