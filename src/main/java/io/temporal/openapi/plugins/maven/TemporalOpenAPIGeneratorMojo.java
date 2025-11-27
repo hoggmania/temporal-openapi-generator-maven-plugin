@@ -1,4 +1,4 @@
-package io.temporal.openapi.generator;
+package io.temporal.openapi.plugins.maven;
 
 import com.squareup.javapoet.JavaFile;
 import io.temporal.openapi.generator.codegen.ActivityInterfaceGenerator;
