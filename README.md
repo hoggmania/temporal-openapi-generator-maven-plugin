@@ -1,5 +1,8 @@
 # Temporal OpenAPI Generator Maven Plugin
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.temporal.openapi/temporal-openapi-generator-maven-plugin.svg)](https://search.maven.org/artifact/io.temporal.openapi/temporal-openapi-generator-maven-plugin)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 A production-quality Maven plugin that generates Temporal Activities from OpenAPI specifications. This plugin automatically creates:
 
 - **Temporal Activity Interface**: A single unified interface with all API operations as Activity methods
@@ -583,11 +586,22 @@ Ensure your `apiClientPackage` matches the OpenAPI Generator configuration:
 <apiPackage>com.example.api.client</apiPackage>
 ```
 
+## Publishing
+
+For maintainers: See [PUBLISHING.md](PUBLISHING.md) for instructions on publishing to Maven Central.
+
 ## License
 
-Apache License 2.0
+Apache License 2.0 - See [LICENSE](LICENSE) for details.
 
 ## Contributing
 
-Contributions welcome! Please open an issue or pull request.
+Contributions welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes with tests
+4. Submit a pull request
+
+For bugs and feature requests, please [open an issue](https://github.com/hoggmania/temporal-openapi-generator-maven-plugin/issues).
 
