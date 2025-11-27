@@ -38,7 +38,7 @@ All changes have been committed and pushed to GitHub.
 
 2. **Request GroupId Access**
    - Create a New Project ticket (OSSRH)
-   - Group Id: `io.temporal.openapi`
+   - Group Id: `io.github.hoggmania`
    - Project URL: `https://github.com/hoggmania/temporal-openapi-generator-maven-plugin`
    - SCM URL: `https://github.com/hoggmania/temporal-openapi-generator-maven-plugin.git`
    
@@ -134,7 +134,7 @@ This will:
 ### Step 6: Verify Publication
 
 After 10-30 minutes, check Maven Central:
-- <https://search.maven.org/artifact/io.temporal.openapi/temporal-openapi-generator-maven-plugin>
+- <https://search.maven.org/artifact/io.github.hoggmania/temporal-openapi-generator-maven-plugin>
 
 After 2-4 hours, users can use:
 ```xml
@@ -178,9 +178,9 @@ First stable release of Temporal OpenAPI Generator Maven Plugin!
 
 Add to your `pom.xml`:
 
-\`\`\`xml
+```xml
 <plugin>
-    <groupId>io.temporal.openapi</groupId>
+    <groupId>io.github.hoggmania</groupId>
     <artifactId>temporal-openapi-generator-maven-plugin</artifactId>
     <version>1.0.0</version>
     <executions>

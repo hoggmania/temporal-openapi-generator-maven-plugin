@@ -8,10 +8,10 @@ This guide explains how to publish the Temporal OpenAPI Generator Maven Plugin t
 
 1. Go to https://issues.sonatype.org/
 2. Create an account
-3. Create a New Project ticket (OSSRH) to claim your `io.temporal.openapi` groupId
+3. Create a New Project ticket (OSSRH) to claim your `io.github.hoggmania` groupId
    - Project: Community Support - Open Source Project Repository Hosting (OSSRH)
    - Issue Type: New Project
-   - Group Id: `io.temporal.openapi`
+   - Group Id: `io.github.hoggmania`
    - Project URL: `https://github.com/hoggmania/temporal-openapi-generator-maven-plugin`
    - SCM URL: `https://github.com/hoggmania/temporal-openapi-generator-maven-plugin.git`
 4. Wait for approval (usually takes 1-2 business days)
@@ -155,12 +155,12 @@ mvn clean deploy
 ### 4. Verify Publication
 
 After 10-30 minutes, check Maven Central:
-- https://search.maven.org/artifact/io.temporal.openapi/temporal-openapi-generator-maven-plugin
+- https://search.maven.org/artifact/io.github.hoggmania/temporal-openapi-generator-maven-plugin
 
 After 2-4 hours, it will be available via:
 ```xml
 <dependency>
-    <groupId>io.temporal.openapi</groupId>
+    <groupId>io.github.hoggmania</groupId>
     <artifactId>temporal-openapi-generator-maven-plugin</artifactId>
     <version>1.0.0</version>
 </dependency>

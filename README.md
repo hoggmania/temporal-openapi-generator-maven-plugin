@@ -1,6 +1,6 @@
 # Temporal OpenAPI Generator Maven Plugin
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.temporal.openapi/temporal-openapi-generator-maven-plugin.svg)](https://search.maven.org/artifact/io.temporal.openapi/temporal-openapi-generator-maven-plugin)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.hoggmania/temporal-openapi-generator-maven-plugin.svg)](https://search.maven.org/artifact/io.github.hoggmania/temporal-openapi-generator-maven-plugin)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 A production-quality Maven plugin that generates Temporal Activities from OpenAPI specifications. This plugin automatically creates:
@@ -84,7 +84,7 @@ Add the plugin to your project's `pom.xml`:
 
             <!-- Temporal OpenAPI Generator (generates Temporal Activities) -->
             <plugin>
-                <groupId>io.temporal.openapi</groupId>
+                <groupId>io.github.hoggmania</groupId>
                 <artifactId>temporal-openapi-generator-maven-plugin</artifactId>
                 <version>1.0.0</version>
                 <executions>
