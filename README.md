@@ -590,6 +590,8 @@ Ensure your `apiClientPackage` matches the OpenAPI Generator configuration:
 
 For maintainers: See [PUBLISHING.md](PUBLISHING.md) for instructions on publishing to Maven Central.
 
+This project uses the `central-publishing-maven-plugin` for simplified Maven Central publishing. The plugin requires Maven Central Portal credentials (user tokens) rather than legacy OSSRH credentials.
+
 ## License
 
 Apache License 2.0 - See [LICENSE](LICENSE) for details.

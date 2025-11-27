@@ -16,7 +16,7 @@
 - **maven-source-plugin**: Generates source JAR
 - **maven-javadoc-plugin**: Generates Javadoc JAR
 - **maven-gpg-plugin**: Signs artifacts with GPG
-- **nexus-staging-maven-plugin**: Handles deployment to Sonatype/Maven Central
+- **central-publishing-maven-plugin**: Handles deployment to Maven Central Portal
 
 ### 3. Documentation Created
 - **LICENSE**: Apache License 2.0 full text
@@ -79,18 +79,15 @@ Create/edit `C:\Users\YourName\.m2\settings.xml`:
 <settings>
   <servers>
     <server>
-      <id>ossrh</id>
-      <username>YOUR_SONATYPE_USERNAME</username>
-      <password>YOUR_SONATYPE_PASSWORD</password>
+      <id>central</id>
+      <username>YOUR_MAVEN_CENTRAL_TOKEN_USERNAME</username>
+      <password>YOUR_MAVEN_CENTRAL_TOKEN_PASSWORD</password>
     </server>
   </servers>
   
   <profiles>
     <profile>
-      <id>ossrh</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
+      <id>release</id>
       <properties>
         <gpg.executable>gpg</gpg.executable>
         <gpg.passphrase>YOUR_GPG_PASSPHRASE</gpg.passphrase>
@@ -99,6 +96,13 @@ Create/edit `C:\Users\YourName\.m2\settings.xml`:
   </profiles>
 </settings>
 ```
+
+**Getting Maven Central Credentials:**
+1. Go to https://central.sonatype.com/
+2. Sign in with your account
+3. Click your username → View Account → Generate User Token
+4. Copy the generated token username and password
+5. Use these in your settings.xml (not your login credentials)
 
 ### Step 4: Test Build Locally
 
@@ -123,13 +127,13 @@ This will:
 Once Sonatype approves your groupId (Step 1) and local build passes (Step 4):
 
 ```bash
-mvn clean deploy
+mvn clean deploy -P release
 ```
 
 This will:
-- Build and sign all artifacts
-- Upload to Sonatype staging repository
-- Automatically release to Maven Central (autoReleaseAfterClose=true)
+- Build and sign all artifacts (main JAR, sources, javadoc)
+- Upload to Maven Central Portal using central-publishing-maven-plugin
+- Automatically publish to Maven Central after validation
 
 ### Step 6: Verify Publication
 

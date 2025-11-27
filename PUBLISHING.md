@@ -75,18 +75,15 @@ Edit or create `~/.m2/settings.xml` (Windows: `C:\Users\YourName\.m2\settings.xm
 <settings>
   <servers>
     <server>
-      <id>ossrh</id>
-      <username>YOUR_SONATYPE_USERNAME</username>
-      <password>YOUR_SONATYPE_PASSWORD</password>
+      <id>central</id>
+      <username>YOUR_MAVEN_CENTRAL_TOKEN_USERNAME</username>
+      <password>YOUR_MAVEN_CENTRAL_TOKEN_PASSWORD</password>
     </server>
   </servers>
   
   <profiles>
     <profile>
-      <id>ossrh</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
+      <id>release</id>
       <properties>
         <gpg.executable>gpg</gpg.executable>
         <gpg.passphrase>YOUR_GPG_PASSPHRASE</gpg.passphrase>
@@ -95,6 +92,11 @@ Edit or create `~/.m2/settings.xml` (Windows: `C:\Users\YourName\.m2\settings.xm
   </profiles>
 </settings>
 ```
+
+**Note:** This project uses the `central-publishing-maven-plugin` which requires Maven Central Portal credentials:
+1. Go to https://central.sonatype.com/ and sign in
+2. Click your username → View Account → Generate User Token
+3. Use the generated token username and password in your settings.xml
 
 **Security Note:** For production, use encrypted passwords:
 ```bash
@@ -117,40 +119,25 @@ This will:
 - Generate Javadoc JAR
 - Sign all artifacts with GPG
 
-### 2. Deploy to Staging
+### 2. Deploy to Maven Central
 
 ```bash
 mvn clean deploy -P release
 ```
 
-Or if you're ready to release directly:
+The `central-publishing-maven-plugin` will automatically:
+1. Build and sign all artifacts (sources, javadoc, main JAR)
+2. Upload to Maven Central Portal
+3. Validate the deployment
+4. Publish to Maven Central
 
-```bash
-mvn clean deploy
-```
+### 3. Monitor Deployment Status
 
-The Nexus Staging plugin is configured with `autoReleaseAfterClose=true`, so it will automatically:
-1. Upload to staging repository
-2. Close the staging repository
-3. Run validation rules
-4. Release to Maven Central (if validation passes)
+You can check the deployment status at:
+- Maven Central Portal: https://central.sonatype.com/publishing
+- View your published artifacts after processing completes
 
-### 3. Manual Staging (Alternative)
-
-If you prefer manual control, update `pom.xml` to set `autoReleaseAfterClose=false`, then:
-
-```bash
-# Deploy to staging
-mvn clean deploy
-
-# Login to Sonatype
-# https://s01.oss.sonatype.org/
-
-# Navigate to "Staging Repositories"
-# Find your repository (iotemporal-xxxx)
-# Click "Close" to validate
-# Click "Release" to publish to Maven Central
-```
+**Note:** The `central-publishing-maven-plugin` publishes directly to Maven Central Portal, which is the new simplified publishing process. The old Nexus OSSRH staging workflow is no longer needed for new projects using the `io.github.*` groupId namespace.
 
 ### 4. Verify Publication
 
@@ -194,7 +181,10 @@ gpg --list-secret-keys
 
 ### Deployment Fails - Unauthorized
 
-Verify your Sonatype credentials in `~/.m2/settings.xml`
+Verify your Maven Central Portal credentials in `~/.m2/settings.xml`:
+- Make sure you're using a **user token** from https://central.sonatype.com/ (not your login password)
+- The server `<id>` must be `central` to match the plugin configuration
+- Generate a new token if your current one has expired
 
 ### Validation Errors
 
@@ -257,7 +247,8 @@ mvn versions:commit  # or versions:revert if you want to undo
 
 ## Additional Resources
 
-- [Maven Central Publishing Guide](https://central.sonatype.org/publish/publish-guide/)
-- [Sonatype OSSRH Guide](https://central.sonatype.org/publish/publish-guide/)
+- [Maven Central Portal Publishing Guide](https://central.sonatype.org/publish/publish-portal-maven/)
+- [Central Publishing Maven Plugin Documentation](https://central.sonatype.org/publish/publish-portal-maven/)
+- [Maven Central Portal](https://central.sonatype.com/)
 - [Maven GPG Plugin](https://maven.apache.org/plugins/maven-gpg-plugin/)
-- [Nexus Staging Plugin](https://github.com/sonatype/nexus-maven-plugins/tree/main/staging/maven-plugin)
+- [GitHub Publishing to Maven Central](https://central.sonatype.org/publish/publish-portal-github/)
