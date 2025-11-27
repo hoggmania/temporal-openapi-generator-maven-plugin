@@ -4,7 +4,6 @@ import com.squareup.javapoet.*;
 import io.temporal.openapi.generator.model.OperationModel;
 import io.temporal.openapi.generator.model.ParameterModel;
 import io.temporal.openapi.generator.model.MediaTypeModel;
-import io.temporal.openapi.generator.parser.TypeMapper;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
@@ -14,15 +13,13 @@ import java.util.List;
  */
 public class ActivityImplementationGenerator {
     
-    private final TypeMapper typeMapper;
     private final String packageName;
     private final String interfaceName;
     private final String implClassName;
     private final String apiClientPackage;
 
-    public ActivityImplementationGenerator(TypeMapper typeMapper, String packageName, 
+    public ActivityImplementationGenerator(String packageName, 
                                           String interfaceName, String apiClientPackage) {
-        this.typeMapper = typeMapper;
         this.packageName = packageName;
         this.interfaceName = interfaceName;
         this.implClassName = interfaceName + "Impl";
@@ -179,7 +176,7 @@ public class ActivityImplementationGenerator {
                 operation.getMethodName());
         }
         
-        methodBuilder.nextControlFlow("catch ($T e)", ClassName.get("Exception"));
+        methodBuilder.nextControlFlow("catch ($T e)", ClassName.get(Exception.class));
         methodBuilder.addComment("Log the error and throw a Temporal ApplicationFailure");
         methodBuilder.addStatement("throw $T.newFailure($S + e.getMessage(), $S, e)",
             ClassName.get("io.temporal.failure", "ApplicationFailure"),

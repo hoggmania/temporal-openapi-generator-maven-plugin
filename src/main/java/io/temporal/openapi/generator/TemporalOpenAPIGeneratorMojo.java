@@ -132,7 +132,6 @@ public class TemporalOpenAPIGeneratorMojo extends AbstractMojo {
             if (generateImplementation) {
                 getLog().info("Generating Activity implementation...");
                 ActivityImplementationGenerator implGenerator = new ActivityImplementationGenerator(
-                    parser.getTypeMapper(),
                     packageName,
                     activityName,
                     apiClientPackage
