@@ -62,6 +62,15 @@ public class TemporalOpenAPIGeneratorMojo extends AbstractMojo {
     private String apiClientPackage;
 
     /**
+     * Package name where OpenAPI Generator model classes are located
+     */
+    @Parameter(
+        property = "openapi.modelPackage",
+        defaultValue = "io.temporal.openapi.generated.models"
+    )
+    private String modelPackage;
+
+    /**
      * Whether to generate implementation class
      */
     @Parameter(property = "openapi.generateImplementation", defaultValue = "true")
@@ -97,7 +106,7 @@ public class TemporalOpenAPIGeneratorMojo extends AbstractMojo {
         try {
             // Parse OpenAPI specification
             getLog().info("Parsing OpenAPI specification...");
-            OpenAPIParser parser = new OpenAPIParser(specFile.getAbsolutePath());
+            OpenAPIParser parser = new OpenAPIParser(specFile.getAbsolutePath(), modelPackage);
             List<OperationModel> operations = parser.parseOperations();
             getLog().info("Found " + operations.size() + " operations");
 

@@ -79,14 +79,8 @@ public class ActivityInterfaceGenerator {
             methodBuilder.addJavadoc("@nonIdempotent This operation is NOT idempotent, use caution with retries\n");
         }
 
-        // Add ActivityMethod annotation with retry options
-        AnnotationSpec.Builder activityMethodBuilder = AnnotationSpec.builder(ActivityMethod.class);
-        
-        // Add schedule-to-close timeout
-        activityMethodBuilder.addMember("scheduleToCloseTimeout", "$S", "PT5M");
-        
-        // Build annotation
-        methodBuilder.addAnnotation(activityMethodBuilder.build());
+        // Add ActivityMethod annotation
+        methodBuilder.addAnnotation(ActivityMethod.class);
 
         // Build parameter object if we have multiple parameters or a request body
         boolean useRequestObject = shouldUseRequestObject(operation);
@@ -138,10 +132,10 @@ public class ActivityInterfaceGenerator {
      */
     private boolean shouldUseRequestObject(OperationModel operation) {
         int paramCount = operation.getParameters() != null ? operation.getParameters().size() : 0;
-        boolean hasRequestBody = operation.getRequestBody() != null;
         
-        // Use request object if we have more than 3 parameters, or parameters + request body
-        return paramCount > 3 || (paramCount > 0 && hasRequestBody);
+        // Use request object if we have more than 5 parameters
+        // Don't use request object just because we have parameters + body (common pattern)
+        return paramCount > 5;
     }
 
     /**

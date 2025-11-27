@@ -39,8 +39,8 @@ public class ActivityImplementationGenerator {
             .addJavadoc("This class is auto-generated from the OpenAPI specification.\n");
 
         // Add API client field for each unique tag/API
-        // For simplicity, we'll create a generic ApiClient field
-        ClassName apiClientClass = ClassName.get(apiClientPackage, "ApiClient");
+        // ApiClient is in the root of the invoker package, not the .api subpackage
+        ClassName apiClientClass = ClassName.get(apiClientPackage.replace(".api", ""), "ApiClient");
         FieldSpec apiClientField = FieldSpec.builder(apiClientClass, "apiClient", Modifier.PRIVATE, Modifier.FINAL)
             .build();
         classBuilder.addField(apiClientField);
@@ -198,8 +198,8 @@ public class ActivityImplementationGenerator {
 
     private boolean shouldUseRequestObject(OperationModel operation) {
         int paramCount = operation.getParameters() != null ? operation.getParameters().size() : 0;
-        boolean hasRequestBody = operation.getRequestBody() != null;
-        return paramCount > 3 || (paramCount > 0 && hasRequestBody);
+        // Use request object if we have more than 5 parameters
+        return paramCount > 5;
     }
 
     private TypeName getTypeName(String javaType) {

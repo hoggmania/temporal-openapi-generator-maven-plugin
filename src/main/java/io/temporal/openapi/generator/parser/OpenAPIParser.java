@@ -22,11 +22,15 @@ public class OpenAPIParser {
     private final TypeMapper typeMapper;
 
     public OpenAPIParser(String specPath) {
+        this(specPath, "io.temporal.openapi.models");
+    }
+
+    public OpenAPIParser(String specPath, String modelPackage) {
         this.openAPI = new OpenAPIV3Parser().read(specPath);
         if (this.openAPI == null) {
             throw new IllegalArgumentException("Failed to parse OpenAPI spec: " + specPath);
         }
-        this.typeMapper = new TypeMapper(openAPI);
+        this.typeMapper = new TypeMapper(openAPI, modelPackage);
     }
 
     public OpenAPIParser(OpenAPI openAPI) {

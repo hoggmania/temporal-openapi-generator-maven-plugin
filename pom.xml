@@ -23,7 +23,7 @@
         <swagger.parser.version>2.1.19</swagger.parser.version>
         <javapoet.version>1.13.0</javapoet.version>
         <jackson.version>2.15.3</jackson.version>
-        <commons-lang3.version>3.14.0</commons-lang3.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
     </properties>
 
     <dependencies>
