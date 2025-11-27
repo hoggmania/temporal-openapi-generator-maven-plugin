@@ -8,8 +8,8 @@ This guide explains how to publish the Temporal OpenAPI Generator Maven Plugin t
 
 1. Go to https://issues.sonatype.org/
 2. Create an account
-3. Create a New Project ticket (OSSRH) to claim your `io.github.hoggmania` groupId
-   - Project: Community Support - Open Source Project Repository Hosting (OSSRH)
+3. Create a New Project ticket (Central) to claim your `io.github.hoggmania` groupId
+   - Project: Community Support - Open Source Project Repository Hosting (Central)
    - Issue Type: New Project
    - Group Id: `io.github.hoggmania`
    - Project URL: `https://github.com/hoggmania/temporal-openapi-generator-maven-plugin`
