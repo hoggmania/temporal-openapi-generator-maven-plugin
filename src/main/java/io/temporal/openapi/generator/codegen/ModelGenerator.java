@@ -26,10 +26,12 @@ public class ModelGenerator {
      */
     public List<JavaFile> generateModels() {
         List<JavaFile> javaFiles = new ArrayList<>();
+        @SuppressWarnings("rawtypes")
         Map<String, Schema> schemas = typeMapper.getSchemasToGenerate();
 
-        for (Map.Entry<String, Schema> entry : schemas.entrySet()) {
+        for (@SuppressWarnings("rawtypes") Map.Entry<String, Schema> entry : schemas.entrySet()) {
             String modelName = entry.getKey();
+            @SuppressWarnings("rawtypes")
             Schema schema = entry.getValue();
             
             JavaFile javaFile = generateModel(modelName, schema);
@@ -44,6 +46,7 @@ public class ModelGenerator {
     /**
      * Generate a single model class
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public JavaFile generateModel(String modelName, Schema schema) {
         if (schema.getProperties() == null || schema.getProperties().isEmpty()) {
             // Skip empty schemas or enums (handle separately if needed)

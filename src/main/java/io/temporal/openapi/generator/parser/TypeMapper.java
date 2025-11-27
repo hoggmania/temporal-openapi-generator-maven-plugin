@@ -84,7 +84,6 @@ public class TypeMapper {
 
         // Check format-specific mappings first
         if (format != null) {
-            String formatKey = type + ":" + format;
             if ("integer".equals(type)) {
                 if ("int32".equals(format)) return "Integer";
                 if ("int64".equals(format)) return "Long";
@@ -136,6 +135,7 @@ public class TypeMapper {
     /**
      * Get all schemas that need to be generated as model classes
      */
+    @SuppressWarnings("rawtypes")
     public Map<String, Schema> getSchemasToGenerate() {
         if (openAPI.getComponents() == null || 
             openAPI.getComponents().getSchemas() == null) {

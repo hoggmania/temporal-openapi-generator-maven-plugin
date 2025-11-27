@@ -1,6 +1,5 @@
 package io.temporal.openapi.generator.model;
 
-import io.swagger.v3.oas.models.media.Schema;
 import java.util.List;
 
 /**

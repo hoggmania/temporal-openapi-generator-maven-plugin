@@ -1,7 +1,5 @@
 package io.temporal.openapi.generator.model;
 
-import java.time.Duration;
-
 /**
  * Metadata for retry configuration in Temporal Activities
  */

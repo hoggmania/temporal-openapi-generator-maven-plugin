@@ -5,13 +5,10 @@ import io.temporal.activity.ActivityInterface;
 import io.temporal.activity.ActivityMethod;
 import io.temporal.openapi.generator.model.OperationModel;
 import io.temporal.openapi.generator.model.ParameterModel;
-import io.temporal.openapi.generator.model.RequestBodyModel;
 import io.temporal.openapi.generator.model.MediaTypeModel;
 import io.temporal.openapi.generator.parser.TypeMapper;
 
 import javax.lang.model.element.Modifier;
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,12 +16,10 @@ import java.util.List;
  */
 public class ActivityInterfaceGenerator {
     
-    private final TypeMapper typeMapper;
     private final String packageName;
     private final String interfaceName;
 
     public ActivityInterfaceGenerator(TypeMapper typeMapper, String packageName, String interfaceName) {
-        this.typeMapper = typeMapper;
         this.packageName = packageName;
         this.interfaceName = interfaceName;
     }
