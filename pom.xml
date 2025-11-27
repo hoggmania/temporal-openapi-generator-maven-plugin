@@ -27,7 +27,15 @@
         <developer>
             <id>hoggmania</id>
             <name>James Holland</name>
+            <email>james@hoggmania.io</email>
             <url>https://github.com/hoggmania</url>
+            <organization>hoggmania</organization>
+            <organizationUrl>https://github.com/hoggmania</organizationUrl>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/London</timezone>
         </developer>
     </developers>
 
