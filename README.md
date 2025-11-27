@@ -216,86 +216,156 @@ This will:
 
 ### 3. Generated Activity Interface
 
-```java
-package com.example.temporal.activities;
+The plugin generates a Temporal Activity interface with all API operations as methods. Here's an actual example from the Pet Store API:
 
+```java
+package com.example.petstore.temporal.activities;
+
+import com.example.petstore.client.model.NewPet;
+import com.example.petstore.client.model.Pet;
+import com.example.petstore.client.model.Vaccination;
 import io.temporal.activity.ActivityInterface;
 import io.temporal.activity.ActivityMethod;
+import java.lang.Integer;
+import java.lang.Long;
+import java.lang.String;
 import java.util.List;
-import com.example.temporal.activities.models.Pet;
 
 /**
  * Temporal Activity interface generated from OpenAPI specification.
  * This interface contains all API operations as Activity methods.
  */
 @ActivityInterface
-public interface ApiActivity {
-
+public interface PetStoreActivity {
     /**
      * List all pets
      *
+     * Returns a list of all pets in the store
+     *
      * @apiOperation GET /pets
      * @idempotent This operation is idempotent and can be safely retried
+     * @param limit Maximum number of pets to return
+     * @param tag Filter pets by tag
      * @return A list of pets
      */
-    @ActivityMethod(scheduleToCloseTimeout = "PT5M")
-    List<Pet> listPets();
+    @ActivityMethod
+    List<Pet> listPets(Integer limit, String tag);
 
     /**
      * Create a pet
      *
+     * Add a new pet to the store
+     *
      * @apiOperation POST /pets
      * @nonIdempotent This operation is NOT idempotent, use caution with retries
      * @param body Request body
-     * @return Pet created
+     * @return Pet created successfully
      */
-    @ActivityMethod(scheduleToCloseTimeout = "PT5M")
-    Pet createPet(Pet body);
+    @ActivityMethod
+    Pet createPet(NewPet body);
 
     /**
      * Get a pet by ID
      *
+     * Returns details of a specific pet
+     *
      * @apiOperation GET /pets/{petId}
      * @idempotent This operation is idempotent and can be safely retried
-     * @param petId 
+     * @param petId ID of the pet to retrieve
      * @return Pet details
      */
-    @ActivityMethod(scheduleToCloseTimeout = "PT5M")
+    @ActivityMethod
     Pet getPet(Long petId);
+
+    /**
+     * Update a pet
+     *
+     * Update an existing pet's information
+     *
+     * @apiOperation PUT /pets/{petId}
+     * @idempotent This operation is idempotent and can be safely retried
+     * @param petId ID of the pet to update
+     * @param body Request body
+     * @return Pet updated successfully
+     */
+    @ActivityMethod
+    Pet updatePet(Long petId, NewPet body);
+
+    /**
+     * Delete a pet
+     *
+     * Remove a pet from the store
+     *
+     * @apiOperation DELETE /pets/{petId}
+     * @idempotent This operation is idempotent and can be safely retried
+     * @param petId ID of the pet to delete
+     */
+    @ActivityMethod
+    void deletePet(Long petId);
+
+    /**
+     * Get pet vaccination records
+     *
+     * Returns vaccination history for a specific pet
+     *
+     * @apiOperation GET /pets/{petId}/vaccinations
+     * @idempotent This operation is idempotent and can be safely retried
+     * @param petId 
+     * @return Vaccination records
+     */
+    @ActivityMethod
+    List<Vaccination> getPetVaccinations(Long petId);
 }
 ```
 
+**Key Features:**
+
+- ✅ All 6 API operations converted to Activity methods
+- ✅ Proper Java types (Integer, Long, String, List)
+- ✅ Model classes from OpenAPI Generator (Pet, NewPet, Vaccination)
+- ✅ Detailed Javadoc with operation info and idempotency hints
+- ✅ Simple `@ActivityMethod` annotation (timeout configured at registration time)
+
 ### 4. Generated Implementation
 
-```java
-package com.example.temporal.activities;
+The plugin also generates the implementation class that delegates to the OpenAPI Generator client:
 
-import com.example.api.client.ApiClient;
-import com.example.api.client.PetsApi;
+```java
+package com.example.petstore.temporal.activities;
+
+import com.example.petstore.client.ApiClient;
+import com.example.petstore.client.api.PetsApi;
+import com.example.petstore.client.model.NewPet;
+import com.example.petstore.client.model.Pet;
+import com.example.petstore.client.model.Vaccination;
 import io.temporal.failure.ApplicationFailure;
+import java.lang.Exception;
+import java.lang.Integer;
+import java.lang.Long;
+import java.lang.Override;
+import java.lang.String;
 import java.util.List;
 
 /**
- * Implementation of ApiActivity that delegates to OpenAPI Generator client.
+ * Implementation of PetStoreActivity that delegates to OpenAPI Generator client.
  * This class is auto-generated from the OpenAPI specification.
  */
-public class ApiActivityImpl implements ApiActivity {
-    
+public class PetStoreActivityImpl implements PetStoreActivity {
     private final ApiClient apiClient;
 
     /**
      * Creates a new activity implementation with the provided API client.
      * @param apiClient The OpenAPI generator client
      */
-    public ApiActivityImpl(ApiClient apiClient) {
+    public PetStoreActivityImpl(ApiClient apiClient) {
         this.apiClient = apiClient;
     }
 
     @Override
-    public List<Pet> listPets() {
+    public List<Pet> listPets(Integer limit, String tag) {
+        PetsApi api = new PetsApi(apiClient);
         try {
-            PetsApi api = new PetsApi(apiClient);
-            List<Pet> result = api.listPets();
+            List<Pet> result = api.listPets(limit, tag);
             return result;
         } catch (Exception e) {
             // Log the error and throw a Temporal ApplicationFailure
@@ -304,28 +374,72 @@ public class ApiActivityImpl implements ApiActivity {
     }
 
     @Override
-    public Pet createPet(Pet body) {
+    public Pet createPet(NewPet body) {
+        PetsApi api = new PetsApi(apiClient);
         try {
-            PetsApi api = new PetsApi(apiClient);
             Pet result = api.createPet(body);
             return result;
         } catch (Exception e) {
+            // Log the error and throw a Temporal ApplicationFailure
             throw ApplicationFailure.newFailure("API call failed: " + e.getMessage(), "API_ERROR", e);
         }
     }
 
     @Override
     public Pet getPet(Long petId) {
+        PetsApi api = new PetsApi(apiClient);
         try {
-            PetsApi api = new PetsApi(apiClient);
             Pet result = api.getPet(petId);
             return result;
         } catch (Exception e) {
+            // Log the error and throw a Temporal ApplicationFailure
+            throw ApplicationFailure.newFailure("API call failed: " + e.getMessage(), "API_ERROR", e);
+        }
+    }
+
+    @Override
+    public Pet updatePet(Long petId, NewPet body) {
+        PetsApi api = new PetsApi(apiClient);
+        try {
+            Pet result = api.updatePet(petId, body);
+            return result;
+        } catch (Exception e) {
+            // Log the error and throw a Temporal ApplicationFailure
+            throw ApplicationFailure.newFailure("API call failed: " + e.getMessage(), "API_ERROR", e);
+        }
+    }
+
+    @Override
+    public void deletePet(Long petId) {
+        PetsApi api = new PetsApi(apiClient);
+        try {
+            api.deletePet(petId);
+        } catch (Exception e) {
+            // Log the error and throw a Temporal ApplicationFailure
+            throw ApplicationFailure.newFailure("API call failed: " + e.getMessage(), "API_ERROR", e);
+        }
+    }
+
+    @Override
+    public List<Vaccination> getPetVaccinations(Long petId) {
+        PetsApi api = new PetsApi(apiClient);
+        try {
+            List<Vaccination> result = api.getPetVaccinations(petId);
+            return result;
+        } catch (Exception e) {
+            // Log the error and throw a Temporal ApplicationFailure
             throw ApplicationFailure.newFailure("API call failed: " + e.getMessage(), "API_ERROR", e);
         }
     }
 }
 ```
+
+**Key Features:**
+
+- ✅ Delegates to OpenAPI Generator's `PetsApi` client
+- ✅ Proper error handling with `ApplicationFailure`
+- ✅ Type-safe method signatures matching the interface
+- ✅ Constructor injection for `ApiClient` configuration
 
 ### 5. Use in Your Workflow
 
@@ -439,7 +553,7 @@ The plugin maps OpenAPI types to Java types:
 | number | float | Float |
 | number | double | Double |
 | boolean | - | Boolean |
-| array | - | java.util.List<T> |
+| array | - | java.util.List&lt;T&gt; |
 | object | - | Generated POJO |
 
 ## Troubleshooting
@@ -447,6 +561,7 @@ The plugin maps OpenAPI types to Java types:
 ### Plugin Not Found
 
 Make sure you've installed the plugin:
+
 ```bash
 cd temporal-openapi-generator-maven-plugin
 mvn clean install
@@ -455,6 +570,7 @@ mvn clean install
 ### OpenAPI Spec Not Parsing
 
 Validate your OpenAPI spec:
+
 ```bash
 npx @apidevtools/swagger-cli validate openapi.yaml
 ```
@@ -462,6 +578,7 @@ npx @apidevtools/swagger-cli validate openapi.yaml
 ### Generated Code Compilation Errors
 
 Ensure your `apiClientPackage` matches the OpenAPI Generator configuration:
+
 ```xml
 <apiPackage>com.example.api.client</apiPackage>
 ```

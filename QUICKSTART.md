@@ -122,12 +122,92 @@ Done! 🎉
 
 ## What You Get
 
+The plugin generates production-ready code from your OpenAPI spec. Here's what a generated Activity looks like:
+
+### Generated Activity Interface
+
+```java
+@ActivityInterface
+public interface PetStoreActivity {
+    /**
+     * List all pets
+     *
+     * @apiOperation GET /pets
+     * @idempotent This operation is idempotent and can be safely retried
+     */
+    @ActivityMethod
+    List<Pet> listPets(Integer limit, String tag);
+
+    /**
+     * Create a pet
+     *
+     * @apiOperation POST /pets
+     * @nonIdempotent This operation is NOT idempotent, use caution with retries
+     */
+    @ActivityMethod
+    Pet createPet(NewPet body);
+
+    @ActivityMethod
+    Pet getPet(Long petId);
+    
+    @ActivityMethod
+    Pet updatePet(Long petId, NewPet body);
+    
+    @ActivityMethod
+    void deletePet(Long petId);
+}
+```
+
+### Generated Implementation
+
+```java
+public class PetStoreActivityImpl implements PetStoreActivity {
+    private final ApiClient apiClient;
+
+    public PetStoreActivityImpl(ApiClient apiClient) {
+        this.apiClient = apiClient;
+    }
+
+    @Override
+    public List<Pet> listPets(Integer limit, String tag) {
+        PetsApi api = new PetsApi(apiClient);
+        try {
+            return api.listPets(limit, tag);
+        } catch (Exception e) {
+            throw ApplicationFailure.newFailure(
+                "API call failed: " + e.getMessage(), 
+                "API_ERROR", 
+                e
+            );
+        }
+    }
+
+    @Override
+    public Pet createPet(NewPet body) {
+        PetsApi api = new PetsApi(apiClient);
+        try {
+            return api.createPet(body);
+        } catch (Exception e) {
+            throw ApplicationFailure.newFailure(
+                "API call failed: " + e.getMessage(), 
+                "API_ERROR", 
+                e
+            );
+        }
+    }
+    
+    // ... other methods
+}
+```
+
+**Features:**
+
 ✅ Type-safe Activity interface from your OpenAPI spec  
 ✅ Implementation that calls your generated API client  
 ✅ Request/response model POJOs  
 ✅ Automatic retry configuration  
-✅ Idempotency hints  
-✅ Error handling  
+✅ Idempotency hints in Javadoc  
+✅ Proper error handling with ApplicationFailure  
 
 ## Next Steps
 
