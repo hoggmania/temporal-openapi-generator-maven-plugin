@@ -51,7 +51,7 @@ Create a new Maven project with this `pom.xml`:
             <plugin>
                 <groupId>io.temporal.openapi</groupId>
                 <artifactId>temporal-openapi-generator-maven-plugin</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>1.0.0</version>
                 <executions>
                     <execution>
                         <goals><goal>generate</goal></goals>
